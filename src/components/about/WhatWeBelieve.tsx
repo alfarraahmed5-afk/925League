@@ -20,12 +20,15 @@ function PrincipleRow({ num, heading, body, index }: { num: string; heading: str
 
   useEffect(() => {
     if (!rowRef.current) return;
-    const items = rowRef.current.querySelectorAll(".p-item");
-    gsap.fromTo(items, { opacity: 0, y: 16 }, {
-      opacity: 1, y: 0, duration: 0.56, stagger: 0.08,
-      scrollTrigger: { trigger: rowRef.current, start: "top 80%", once: true },
-      delay: index * 0.06,
-    });
+    const ctx = gsap.context(() => {
+      const items = rowRef.current!.querySelectorAll(".p-item");
+      gsap.fromTo(items, { opacity: 0, y: 16 }, {
+        opacity: 1, y: 0, duration: 0.56, stagger: 0.08,
+        scrollTrigger: { trigger: rowRef.current, start: "top 80%", once: true },
+        delay: index * 0.06,
+      });
+    }, rowRef);
+    return () => ctx.revert();
   }, [index]);
 
   return (

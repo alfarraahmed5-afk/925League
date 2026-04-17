@@ -1,6 +1,6 @@
 "use client";
+import { Fragment, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import AudioToggle from "./AudioToggle";
@@ -58,10 +58,11 @@ export default function Footer() {
         className="px-8 md:px-16 pt-20 pb-10 border-b border-[rgba(241,234,224,0.1)]"
       >
         <p className="font-fraunces font-medium italic text-[#F1EAE0] leading-[1.1] text-[clamp(36px,6vw,64px)]">
-          {"Come run with us.".split(" ").map((word, i) => (
-            <span key={i} className="footer-word inline-block" style={{ opacity: 0 }}>
-              {word}{" "}
-            </span>
+          {"Come run with us.".split(" ").map((word, i, arr) => (
+            <Fragment key={i}>
+              <span className="footer-word inline-block" style={{ opacity: 0 }}>{word}</span>
+              {i < arr.length - 1 && " "}
+            </Fragment>
           ))}
         </p>
       </div>

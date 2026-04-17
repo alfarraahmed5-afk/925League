@@ -11,14 +11,17 @@ export default function NextSaturday() {
 
   useEffect(() => {
     if (!sectionRef.current || !dateRef.current) return;
-    const chars = dateRef.current.querySelectorAll(".char");
-    const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true } });
+    const ctx = gsap.context(() => {
+      const chars = dateRef.current!.querySelectorAll(".char");
+      const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true } });
 
-    // Flip reveal on date chars
-    tl.fromTo(chars, { rotateY: -90, opacity: 0 }, {
-      rotateY: 0, opacity: 1, duration: 0.32, stagger: 0.04, ease: "power3.out",
-    }, 0);
-    tl.fromTo(sectionRef.current.querySelectorAll(".fade-in"), { opacity: 0 }, { opacity: 1, duration: 0.4, stagger: 0.1 }, 0.5);
+      // Flip reveal on date chars
+      tl.fromTo(chars, { rotateY: -90, opacity: 0 }, {
+        rotateY: 0, opacity: 1, duration: 0.32, stagger: 0.04, ease: "power3.out",
+      }, 0);
+      tl.fromTo(sectionRef.current!.querySelectorAll(".fade-in"), { opacity: 0 }, { opacity: 1, duration: 0.4, stagger: 0.1 }, 0.5);
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   const dateText = "Saturday, April 25.";

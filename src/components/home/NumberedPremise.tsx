@@ -19,24 +19,28 @@ function NumberedRow({ num, heading, body, index }: { num: string; heading: stri
 
   useEffect(() => {
     if (!rowRef.current) return;
-    gsap.fromTo(
-      rowRef.current,
-      { opacity: 0, y: 20 },
-      {
-        opacity: 1, y: 0, duration: 0.54,
-        scrollTrigger: { trigger: rowRef.current, start: "top 75%", once: true },
-        delay: index * 0.08,
-      }
-    );
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        rowRef.current,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1, y: 0, duration: 0.54,
+          scrollTrigger: { trigger: rowRef.current, start: "top 75%", once: true },
+          delay: index * 0.08,
+        }
+      );
+    }, rowRef);
+    return () => ctx.revert();
   }, [index]);
 
   useEffect(() => {
     if (!numRef.current) return;
-    gsap.to(numRef.current, {
+    const tween = gsap.to(numRef.current, {
       color: hovered ? "#E4572E" : "#9BA0A6",
       duration: 0.22,
       ease: "power2.out",
     });
+    return () => { tween.kill(); };
   }, [hovered]);
 
   return (
@@ -77,11 +81,14 @@ export default function NumberedPremise() {
 
   useEffect(() => {
     if (!leftRef.current) return;
-    const els = leftRef.current.querySelectorAll(".animate-in");
-    gsap.fromTo(els, { opacity: 0, y: 20 }, {
-      opacity: 1, y: 0, duration: 0.56, stagger: 0.12,
-      scrollTrigger: { trigger: leftRef.current, start: "top 80%", once: true },
-    });
+    const ctx = gsap.context(() => {
+      const els = leftRef.current!.querySelectorAll(".animate-in");
+      gsap.fromTo(els, { opacity: 0, y: 20 }, {
+        opacity: 1, y: 0, duration: 0.56, stagger: 0.12,
+        scrollTrigger: { trigger: leftRef.current, start: "top 80%", once: true },
+      });
+    }, leftRef);
+    return () => ctx.revert();
   }, []);
 
   return (

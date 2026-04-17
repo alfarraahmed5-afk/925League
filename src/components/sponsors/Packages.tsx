@@ -52,11 +52,14 @@ export default function Packages() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    const cols = sectionRef.current.querySelectorAll(".package-col");
-    gsap.fromTo(cols, { opacity: 0, y: 40 }, {
-      opacity: 1, y: 0, duration: 0.56, stagger: 0.14,
-      scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
-    });
+    const ctx = gsap.context(() => {
+      const cols = sectionRef.current!.querySelectorAll(".package-col");
+      gsap.fromTo(cols, { opacity: 0, y: 40 }, {
+        opacity: 1, y: 0, duration: 0.56, stagger: 0.14,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
+      });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (

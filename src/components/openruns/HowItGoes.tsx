@@ -20,28 +20,32 @@ export default function HowItGoes() {
   useEffect(() => {
     if (!sectionRef.current || !lineRef.current) return;
 
-    // Grow vertical line on scroll
-    gsap.fromTo(lineRef.current, { scaleY: 0 }, {
-      scaleY: 1,
-      transformOrigin: "top",
-      ease: "none",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 70%",
-        end: "bottom 70%",
-        scrub: true,
-      },
-    });
+    const ctx = gsap.context(() => {
+      // Grow vertical line on scroll
+      gsap.fromTo(lineRef.current, { scaleY: 0 }, {
+        scaleY: 1,
+        transformOrigin: "top",
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          end: "bottom 70%",
+          scrub: true,
+        },
+      });
 
-    // Animate timeline items
-    const items = sectionRef.current.querySelectorAll(".timeline-item");
-    items.forEach((item) => {
-      const dot = item.querySelector(".dot");
-      const content = item.querySelectorAll(".content-el");
-      const tl = gsap.timeline({ scrollTrigger: { trigger: item, start: "top 80%", once: true } });
-      if (dot) tl.fromTo(dot, { scale: 0, backgroundColor: "#2A2D31" }, { scale: 1, backgroundColor: "#E4572E", duration: 0.2 }, 0);
-      if (content.length) tl.fromTo(content, { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.56, stagger: 0.06 }, 0.1);
-    });
+      // Animate timeline items
+      const items = sectionRef.current!.querySelectorAll(".timeline-item");
+      items.forEach((item) => {
+        const dot = item.querySelector(".dot");
+        const content = item.querySelectorAll(".content-el");
+        const tl = gsap.timeline({ scrollTrigger: { trigger: item, start: "top 80%", once: true } });
+        if (dot) tl.fromTo(dot, { scale: 0, backgroundColor: "#2A2D31" }, { scale: 1, backgroundColor: "#E4572E", duration: 0.2 }, 0);
+        if (content.length) tl.fromTo(content, { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.56, stagger: 0.06 }, 0.1);
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (

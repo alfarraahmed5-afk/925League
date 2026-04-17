@@ -20,34 +20,36 @@ export default function ByTheNumbers() {
   useEffect(() => {
     if (!sectionRef.current || !gridRef.current) return;
 
-    // Pin the section
-    const trigger = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: "top top",
-      end: "+=900",
-      pin: true,
-      scrub: 1,
-      anticipatePin: 1,
-      onUpdate: (self) => {
-        stats.forEach((stat, i) => {
-          const threshold = i * 0.25;
-          const progress = Math.min(1, Math.max(0, (self.progress - threshold) / 0.25));
-          const el = numberRefs.current[i];
-          if (el) {
-            const current = Math.round(stat.value * progress);
-            el.textContent = current.toLocaleString();
-          }
-        });
-      },
-    });
+    const ctx = gsap.context(() => {
+      // Pin the section
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top top",
+        end: "+=900",
+        pin: true,
+        scrub: 1,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          stats.forEach((stat, i) => {
+            const threshold = i * 0.25;
+            const progress = Math.min(1, Math.max(0, (self.progress - threshold) / 0.25));
+            const el = numberRefs.current[i];
+            if (el) {
+              const current = Math.round(stat.value * progress);
+              el.textContent = current.toLocaleString();
+            }
+          });
+        },
+      });
 
-    // Fade in grid on enter
-    gsap.fromTo(gridRef.current, { opacity: 0 }, {
-      opacity: 1, duration: 0.6,
-      scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
-    });
+      // Fade in grid on enter
+      gsap.fromTo(gridRef.current, { opacity: 0 }, {
+        opacity: 1, duration: 0.6,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
+      });
+    }, sectionRef);
 
-    return () => { trigger.kill(); };
+    return () => ctx.revert();
   }, []);
 
   return (

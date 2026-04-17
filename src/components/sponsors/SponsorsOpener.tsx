@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -20,6 +20,8 @@ export default function SponsorsOpener() {
     if (words.length) tl.fromTo(words, { opacity: 0, y: 20, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, stagger: 0.06, ease: "power3.out" }, 0.1);
     if (para) tl.fromTo(para, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.6);
     if (ctas.length) tl.fromTo(ctas, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.32, stagger: 0.1 }, 0.8);
+
+    return () => { tl.kill(); };
   }, []);
 
   const headline = "Partner with a league that reaches 300 working professionals weekly.";
@@ -28,8 +30,11 @@ export default function SponsorsOpener() {
     <section ref={ref} className="min-h-screen bg-[#0B0C0E] flex flex-col items-center justify-center pt-[72px] px-8 md:px-16 py-24 text-center">
       <p className="eyebrow mb-8" style={{ opacity: 0 }}>FOR PARTNERS</p>
       <h1 className="font-fraunces font-semibold text-[#F1EAE0] leading-[1.1] text-[clamp(32px,5vw,72px)] max-w-[880px] mb-8">
-        {headline.split(" ").map((word, i) => (
-          <span key={i} className="word inline-block" style={{ opacity: 0 }}>{word}{" "}</span>
+        {headline.split(" ").map((word, i, arr) => (
+          <Fragment key={i}>
+            <span className="word inline-block" style={{ opacity: 0 }}>{word}</span>
+            {i < arr.length - 1 && " "}
+          </Fragment>
         ))}
       </h1>
       <p className="para font-inter text-[#9BA0A6] text-[17px] leading-[1.65] max-w-[640px] mb-10" style={{ opacity: 0 }}>

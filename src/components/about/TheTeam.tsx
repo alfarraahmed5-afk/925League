@@ -17,17 +17,20 @@ export default function TheTeam() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    const cols = sectionRef.current.querySelectorAll(".team-member");
-    cols.forEach((col, i) => {
-      const portrait = col.querySelector(".portrait");
-      const textEls = col.querySelectorAll(".text-el");
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: col, start: "top 80%", once: true },
-        delay: i * 0.12,
+    const ctx = gsap.context(() => {
+      const cols = sectionRef.current!.querySelectorAll(".team-member");
+      cols.forEach((col, i) => {
+        const portrait = col.querySelector(".portrait");
+        const textEls = col.querySelectorAll(".text-el");
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: col, start: "top 80%", once: true },
+          delay: i * 0.12,
+        });
+        if (portrait) tl.fromTo(portrait, { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.7, ease: "power3.out" }, 0);
+        if (textEls.length) tl.fromTo(textEls, { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.56, stagger: 0.08 }, 0.3);
       });
-      if (portrait) tl.fromTo(portrait, { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.7, ease: "power3.out" }, 0);
-      if (textEls.length) tl.fromTo(textEls, { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.56, stagger: 0.08 }, 0.3);
-    });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (

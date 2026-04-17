@@ -21,11 +21,14 @@ export default function TeamsGrid() {
 
   useEffect(() => {
     if (!gridRef.current) return;
-    const cards = gridRef.current.querySelectorAll(".team-card");
-    gsap.fromTo(cards, { opacity: 0, y: 12 }, {
-      opacity: 1, y: 0, duration: 0.4, stagger: { each: 0.08, from: "start" },
-      scrollTrigger: { trigger: gridRef.current, start: "top 75%", once: true },
-    });
+    const ctx = gsap.context(() => {
+      const cards = gridRef.current!.querySelectorAll(".team-card");
+      gsap.fromTo(cards, { opacity: 0, y: 12 }, {
+        opacity: 1, y: 0, duration: 0.4, stagger: { each: 0.08, from: "start" },
+        scrollTrigger: { trigger: gridRef.current, start: "top 75%", once: true },
+      });
+    }, gridRef);
+    return () => ctx.revert();
   }, []);
 
   return (

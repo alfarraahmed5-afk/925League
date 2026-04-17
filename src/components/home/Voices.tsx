@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -31,18 +31,21 @@ export default function Voices() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    const quoteBlocks = sectionRef.current.querySelectorAll(".quote-block");
-    quoteBlocks.forEach((block) => {
-      const mark = block.querySelector(".quote-mark");
-      const words = block.querySelectorAll(".q-word");
-      const attr = block.querySelector(".attribution");
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: block, start: "top 80%", once: true },
+    const ctx = gsap.context(() => {
+      const quoteBlocks = sectionRef.current!.querySelectorAll(".quote-block");
+      quoteBlocks.forEach((block) => {
+        const mark = block.querySelector(".quote-mark");
+        const words = block.querySelectorAll(".q-word");
+        const attr = block.querySelector(".attribution");
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: block, start: "top 80%", once: true },
+        });
+        if (mark) tl.fromTo(mark, { scale: 1.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }, 0);
+        if (words.length) tl.fromTo(words, { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.9, stagger: 0.05, ease: "power3.out" }, 0.2);
+        if (attr) tl.fromTo(attr, { opacity: 0 }, { opacity: 1, duration: 0.32 }, 0.8);
       });
-      if (mark) tl.fromTo(mark, { scale: 1.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }, 0);
-      if (words.length) tl.fromTo(words, { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.9, stagger: 0.05, ease: "power3.out" }, 0.2);
-      if (attr) tl.fromTo(attr, { opacity: 0 }, { opacity: 1, duration: 0.32 }, 0.8);
-    });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -57,13 +60,14 @@ export default function Voices() {
               className="quote-mark font-fraunces font-medium text-[#E4572E] leading-none select-none"
               style={{ fontSize: "clamp(64px,8vw,128px)", opacity: 0 }}
             >
-              "
+              &ldquo;
             </span>
             <blockquote className="font-fraunces font-normal italic text-[#0B0C0E] text-[clamp(18px,2.5vw,32px)] leading-[1.4] max-w-[800px]">
-              {q.text.split(" ").map((word, wi) => (
-                <span key={wi} className="q-word inline-block" style={{ opacity: 0 }}>
-                  {word}{" "}
-                </span>
+              {q.text.split(" ").map((word, wi, arr) => (
+                <Fragment key={wi}>
+                  <span className="q-word inline-block" style={{ opacity: 0 }}>{word}</span>
+                  {wi < arr.length - 1 && " "}
+                </Fragment>
               ))}
             </blockquote>
             <div className="attribution flex flex-col gap-1" style={{ opacity: 0 }}>

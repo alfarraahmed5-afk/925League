@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Link from "next/link";
@@ -12,19 +12,19 @@ export default function ClosingCTA() {
 
   useEffect(() => {
     if (!sectionRef.current || !contentRef.current) return;
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
-    });
-
-    tl.fromTo(sectionRef.current, { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0);
-
-    const words = contentRef.current.querySelectorAll(".word");
-    tl.fromTo(words, { opacity: 0, y: 20, filter: "blur(10px)" }, {
-      opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, stagger: 0.06, ease: "power3.out",
-    }, 0.2);
-
-    tl.fromTo(contentRef.current.querySelector(".cta-pill"), { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.32, ease: "power3.out" }, 0.7);
-    tl.fromTo(contentRef.current.querySelector(".sub-link"), { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.9);
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
+      });
+      tl.fromTo(sectionRef.current, { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0);
+      const words = contentRef.current!.querySelectorAll(".word");
+      tl.fromTo(words, { opacity: 0, y: 20, filter: "blur(10px)" }, {
+        opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, stagger: 0.06, ease: "power3.out",
+      }, 0.2);
+      tl.fromTo(contentRef.current!.querySelector(".cta-pill"), { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.32, ease: "power3.out" }, 0.7);
+      tl.fromTo(contentRef.current!.querySelector(".sub-link"), { opacity: 0 }, { opacity: 1, duration: 0.3 }, 0.9);
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   const headline = "The spring season starts March 14. Sign up by March 1.";
@@ -37,12 +37,13 @@ export default function ClosingCTA() {
     >
       <div ref={contentRef} className="flex flex-col items-center text-center gap-8 max-w-[760px]">
         <h2 className="font-fraunces font-semibold text-[#0B0C0E] text-[clamp(28px,4vw,56px)] leading-[1.15]">
-          {headline.split(" ").map((word, i) => {
+          {headline.split(" ").map((word, i, arr) => {
             const isDate = word.includes("March") || word === "14." || word === "1.";
             return (
-              <span key={i} className={`word inline-block ${isDate ? "font-jetbrains" : ""}`} style={{ opacity: 0 }}>
-                {word}{" "}
-              </span>
+              <Fragment key={i}>
+                <span className={`word inline-block ${isDate ? "font-jetbrains" : ""}`} style={{ opacity: 0 }}>{word}</span>
+                {i < arr.length - 1 && " "}
+              </Fragment>
             );
           })}
         </h2>

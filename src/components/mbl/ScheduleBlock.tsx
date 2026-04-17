@@ -26,16 +26,19 @@ export default function ScheduleBlock() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    const rows = sectionRef.current.querySelectorAll(".date-row");
-    gsap.fromTo(rows, { opacity: 0, y: 6 }, {
-      opacity: 1, y: 0, duration: 0.26, stagger: 0.06,
-      scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
-    });
-    const heading = sectionRef.current.querySelectorAll(".heading-el");
-    gsap.fromTo(heading, { opacity: 0, y: 16 }, {
-      opacity: 1, y: 0, duration: 0.56, stagger: 0.12,
-      scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
-    });
+    const ctx = gsap.context(() => {
+      const rows = sectionRef.current!.querySelectorAll(".date-row");
+      gsap.fromTo(rows, { opacity: 0, y: 6 }, {
+        opacity: 1, y: 0, duration: 0.26, stagger: 0.06,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
+      });
+      const heading = sectionRef.current!.querySelectorAll(".heading-el");
+      gsap.fromTo(heading, { opacity: 0, y: 16 }, {
+        opacity: 1, y: 0, duration: 0.56, stagger: 0.12,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
+      });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (

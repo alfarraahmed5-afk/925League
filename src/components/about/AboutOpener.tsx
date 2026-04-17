@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
 export default function AboutOpener() {
@@ -17,6 +17,8 @@ export default function AboutOpener() {
     if (words.length) tl.fromTo(words, { opacity: 0, y: 24, filter: "blur(10px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.9, stagger: 0.1, ease: "power3.out" }, 0.1);
     if (para) tl.fromTo(para, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.8);
     if (numeral) tl.fromTo(numeral, { opacity: 0, x: 40 }, { opacity: 0.6, x: 0, duration: 0.6, ease: "power3.out" }, 1);
+
+    return () => { tl.kill(); };
   }, []);
 
   const headline = "We started because we wanted somewhere to play. Everything after was figuring that out.";
@@ -26,8 +28,11 @@ export default function AboutOpener() {
       <div className="flex-1 flex flex-col justify-center gap-7 max-w-[700px]">
         <p className="eyebrow" style={{ opacity: 0 }}>ABOUT</p>
         <h1 className="font-fraunces font-bold text-[#0B0C0E] leading-[1.1] text-[clamp(32px,5vw,72px)]">
-          {headline.split(" ").map((word, i) => (
-            <span key={i} className="word inline-block" style={{ opacity: 0 }}>{word}{" "}</span>
+          {headline.split(" ").map((word, i, arr) => (
+            <Fragment key={i}>
+              <span className="word inline-block" style={{ opacity: 0 }}>{word}</span>
+              {i < arr.length - 1 && " "}
+            </Fragment>
           ))}
         </h1>
         <p className="para font-inter text-[#4A4E54] text-[17px] leading-[1.65] max-w-[600px]" style={{ opacity: 0 }}>

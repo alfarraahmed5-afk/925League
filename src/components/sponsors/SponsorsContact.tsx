@@ -16,11 +16,14 @@ export default function SponsorsContact() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    const els = sectionRef.current.querySelectorAll(".animate-in");
-    gsap.fromTo(els, { opacity: 0, y: 16 }, {
-      opacity: 1, y: 0, duration: 0.56, stagger: 0.12,
-      scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
-    });
+    const ctx = gsap.context(() => {
+      const els = sectionRef.current!.querySelectorAll(".animate-in");
+      gsap.fromTo(els, { opacity: 0, y: 16 }, {
+        opacity: 1, y: 0, duration: 0.56, stagger: 0.12,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
+      });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (

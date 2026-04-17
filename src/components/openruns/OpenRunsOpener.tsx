@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
@@ -27,6 +27,8 @@ export default function OpenRunsOpener() {
         clipPath: "inset(0% 0 0 0)", scale: 1, duration: 1.1, ease: "power3.out",
       }, 0);
     }
+
+    return () => { tl.kill(); };
   }, []);
 
   return (
@@ -35,8 +37,11 @@ export default function OpenRunsOpener() {
       <div ref={textRef} className="flex-1 flex flex-col justify-center px-8 md:px-16 py-16 gap-6">
         <h1 className="font-fraunces font-bold text-[#0B0C0E] leading-[1.0] text-[clamp(56px,10vw,164px)]">
           <div className="line1">
-            {"OPEN RUNS".split(" ").map((w, i) => (
-              <span key={i} className="word inline-block" style={{ opacity: 0 }}>{w}{" "}</span>
+            {"OPEN RUNS".split(" ").map((w, i, arr) => (
+              <Fragment key={i}>
+                <span className="word inline-block" style={{ opacity: 0 }}>{w}</span>
+                {i < arr.length - 1 && " "}
+              </Fragment>
             ))}
           </div>
           <div className="line2">

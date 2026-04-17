@@ -20,29 +20,32 @@ export default function WhoPlays() {
 
   useEffect(() => {
     if (!gridRef.current) return;
-    stats.forEach((stat, i) => {
-      const el = numRefs.current[i];
-      if (!el) return;
-      gsap.fromTo(
-        { val: 0 },
-        { val: stat.value },
-        {
-          duration: 0.9, ease: "power2.out",
-          delay: i * 0.14,
-          onUpdate: function () {
-            const v = this.targets()[0].val;
-            el.textContent = (stat.value % 1 === 0 ? Math.round(v) : v.toFixed(1)) + stat.suffix;
-          },
-          scrollTrigger: { trigger: el, start: "top 80%", once: true },
-        }
-      );
-    });
+    const ctx = gsap.context(() => {
+      stats.forEach((stat, i) => {
+        const el = numRefs.current[i];
+        if (!el) return;
+        gsap.fromTo(
+          { val: 0 },
+          { val: stat.value },
+          {
+            duration: 0.9, ease: "power2.out",
+            delay: i * 0.14,
+            onUpdate: function () {
+              const v = this.targets()[0].val;
+              el.textContent = (stat.value % 1 === 0 ? Math.round(v) : v.toFixed(1)) + stat.suffix;
+            },
+            scrollTrigger: { trigger: el, start: "top 80%", once: true },
+          }
+        );
+      });
 
-    const cells = gridRef.current.querySelectorAll(".stat-cell");
-    gsap.fromTo(cells, { opacity: 0, y: 16 }, {
-      opacity: 1, y: 0, duration: 0.56, stagger: { each: 0.14, from: "start" },
-      scrollTrigger: { trigger: gridRef.current, start: "top 80%", once: true },
-    });
+      const cells = gridRef.current!.querySelectorAll(".stat-cell");
+      gsap.fromTo(cells, { opacity: 0, y: 16 }, {
+        opacity: 1, y: 0, duration: 0.56, stagger: { each: 0.14, from: "start" },
+        scrollTrigger: { trigger: gridRef.current, start: "top 80%", once: true },
+      });
+    }, gridRef);
+    return () => ctx.revert();
   }, []);
 
   return (

@@ -13,34 +13,38 @@ export default function MBLOpener() {
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const tl = gsap.timeline({ delay: 0.5 });
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 0.5 });
 
-    if (imgRef.current) {
-      tl.fromTo(imgRef.current, { clipPath: "inset(100% 0 0 0)", scale: 1.08 }, {
-        clipPath: "inset(0% 0 0 0)", scale: 1, duration: 1.1, ease: "power3.out",
-      }, 0);
-    }
+      if (imgRef.current) {
+        tl.fromTo(imgRef.current, { clipPath: "inset(100% 0 0 0)", scale: 1.08 }, {
+          clipPath: "inset(0% 0 0 0)", scale: 1, duration: 1.1, ease: "power3.out",
+        }, 0);
+      }
 
-    const textEls = textRef.current?.querySelectorAll(".animate-in");
-    if (textEls) {
-      tl.fromTo(textEls, { opacity: 0, y: 20, filter: "blur(8px)" }, {
-        opacity: 1, y: 0, filter: "blur(0px)", duration: 0.56, stagger: 0.18, ease: "power3.out",
-      }, 0.4);
-    }
+      const textEls = textRef.current?.querySelectorAll(".animate-in");
+      if (textEls) {
+        tl.fromTo(textEls, { opacity: 0, y: 20, filter: "blur(8px)" }, {
+          opacity: 1, y: 0, filter: "blur(0px)", duration: 0.56, stagger: 0.18, ease: "power3.out",
+        }, 0.4);
+      }
 
-    // Parallax on scroll
-    if (imgRef.current && sectionRef.current) {
-      gsap.to(imgRef.current, {
-        y: "15%",
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-    }
+      // Parallax on scroll
+      if (imgRef.current && sectionRef.current) {
+        gsap.to(imgRef.current, {
+          y: "15%",
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
   const headline = ["Eight teams.", "Twelve weeks.", "One trophy."];

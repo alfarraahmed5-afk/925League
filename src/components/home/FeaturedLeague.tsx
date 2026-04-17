@@ -14,22 +14,25 @@ export default function FeaturedLeague() {
 
   useEffect(() => {
     if (!imgRef.current || !textRef.current) return;
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
-    });
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
+      });
 
-    // Image clip-path reveal
-    tl.fromTo(
-      imgRef.current,
-      { clipPath: "inset(100% 0 0 0)", scale: 1.08 },
-      { clipPath: "inset(0% 0 0 0)", scale: 1, duration: 0.9, ease: "power3.out" }
-    );
+      // Image clip-path reveal
+      tl.fromTo(
+        imgRef.current,
+        { clipPath: "inset(100% 0 0 0)", scale: 1.08 },
+        { clipPath: "inset(0% 0 0 0)", scale: 1, duration: 0.9, ease: "power3.out" }
+      );
 
-    // Text
-    const textEls = textRef.current.querySelectorAll(".animate-in");
-    tl.fromTo(textEls, { opacity: 0, y: 20, filter: "blur(8px)" }, {
-      opacity: 1, y: 0, filter: "blur(0px)", duration: 0.56, stagger: 0.1, ease: "power3.out",
-    }, 0.2);
+      // Text
+      const textEls = textRef.current!.querySelectorAll(".animate-in");
+      tl.fromTo(textEls, { opacity: 0, y: 20, filter: "blur(8px)" }, {
+        opacity: 1, y: 0, filter: "blur(0px)", duration: 0.56, stagger: 0.1, ease: "power3.out",
+      }, 0.2);
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (

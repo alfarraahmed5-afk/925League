@@ -20,11 +20,14 @@ export default function HouseRules() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    const items = sectionRef.current.querySelectorAll(".rule-item");
-    gsap.fromTo(items, { opacity: 0, y: 4 }, {
-      opacity: 1, y: 0, duration: 0.22, stagger: 0.08,
-      scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
-    });
+    const ctx = gsap.context(() => {
+      const items = sectionRef.current!.querySelectorAll(".rule-item");
+      gsap.fromTo(items, { opacity: 0, y: 4 }, {
+        opacity: 1, y: 0, duration: 0.22, stagger: 0.08,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
+      });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (

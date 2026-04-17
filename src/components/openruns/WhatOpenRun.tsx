@@ -16,15 +16,18 @@ export default function WhatOpenRun() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    const cols = sectionRef.current.querySelectorAll(".fact-col");
-    cols.forEach((col, i) => {
-      const items = col.querySelectorAll(".fact-item");
-      gsap.fromTo(items, { opacity: 0, y: 16, filter: "blur(6px)" }, {
-        opacity: 1, y: 0, filter: "blur(0px)", duration: 0.56, stagger: 0.06,
-        delay: i * 0.18,
-        scrollTrigger: { trigger: col, start: "top 80%", once: true },
+    const ctx = gsap.context(() => {
+      const cols = sectionRef.current!.querySelectorAll(".fact-col");
+      cols.forEach((col, i) => {
+        const items = col.querySelectorAll(".fact-item");
+        gsap.fromTo(items, { opacity: 0, y: 16, filter: "blur(6px)" }, {
+          opacity: 1, y: 0, filter: "blur(0px)", duration: 0.56, stagger: 0.06,
+          delay: i * 0.18,
+          scrollTrigger: { trigger: col, start: "top 80%", once: true },
+        });
       });
-    });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (

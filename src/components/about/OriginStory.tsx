@@ -19,20 +19,23 @@ export default function OriginStory() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true } });
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true } });
 
-    if (imgRef.current) {
-      tl.fromTo(imgRef.current, { clipPath: "inset(100% 0 0 0)", scale: 1.06 }, {
-        clipPath: "inset(0% 0 0 0)", scale: 1, duration: 0.9, ease: "power3.out",
-      }, 0);
-    }
+      if (imgRef.current) {
+        tl.fromTo(imgRef.current, { clipPath: "inset(100% 0 0 0)", scale: 1.06 }, {
+          clipPath: "inset(0% 0 0 0)", scale: 1, duration: 0.9, ease: "power3.out",
+        }, 0);
+      }
 
-    const paras = storyRef.current?.querySelectorAll(".story-para");
-    if (paras) {
-      tl.fromTo(paras, { opacity: 0, y: 16 }, {
-        opacity: 1, y: 0, duration: 0.7, stagger: 0.18, ease: "power3.out",
-      }, 0.3);
-    }
+      const paras = storyRef.current?.querySelectorAll(".story-para");
+      if (paras) {
+        tl.fromTo(paras, { opacity: 0, y: 16 }, {
+          opacity: 1, y: 0, duration: 0.7, stagger: 0.18, ease: "power3.out",
+        }, 0.3);
+      }
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (

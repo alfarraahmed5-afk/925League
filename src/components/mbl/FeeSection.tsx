@@ -22,19 +22,22 @@ export default function FeeSection() {
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    const items = sectionRef.current.querySelectorAll(".animate-in");
-    gsap.fromTo(items, { opacity: 0, y: 10 }, {
-      opacity: 1, y: 0, duration: 0.56, stagger: 0.08,
-      scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
-    });
+    const ctx = gsap.context(() => {
+      const items = sectionRef.current!.querySelectorAll(".animate-in");
+      gsap.fromTo(items, { opacity: 0, y: 10 }, {
+        opacity: 1, y: 0, duration: 0.56, stagger: 0.08,
+        scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
+      });
 
-    gsap.fromTo({ val: 0 }, { val: FEE }, {
-      duration: 1.2, ease: "power2.out",
-      onUpdate: function () {
-        if (numRef.current) numRef.current.textContent = Math.round(this.targets()[0].val).toLocaleString();
-      },
-      scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
-    });
+      gsap.fromTo({ val: 0 }, { val: FEE }, {
+        duration: 1.2, ease: "power2.out",
+        onUpdate: function () {
+          if (numRef.current) numRef.current.textContent = Math.round(this.targets()[0].val).toLocaleString();
+        },
+        scrollTrigger: { trigger: sectionRef.current, start: "top 75%", once: true },
+      });
+    }, sectionRef);
+    return () => ctx.revert();
   }, []);
 
   return (

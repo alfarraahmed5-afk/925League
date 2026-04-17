@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
@@ -25,55 +25,59 @@ export default function HomeOpener() {
 
   useEffect(() => {
     if (!mounted) return;
-    const tl = gsap.timeline({ delay: 1.4 });
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 1.4 });
 
-    if (photoRef.current) {
-      tl.fromTo(photoRef.current,
-        { clipPath: "inset(8% 4% 8% 4%)", scale: 1.04, opacity: 0 },
-        { clipPath: "inset(0% 0% 0% 0%)", scale: 1, opacity: 1, duration: 1.1, ease: "power3.out" },
-        0
-      );
-    }
+      if (photoRef.current) {
+        tl.fromTo(photoRef.current,
+          { clipPath: "inset(8% 4% 8% 4%)", scale: 1.04, opacity: 0 },
+          { clipPath: "inset(0% 0% 0% 0%)", scale: 1, opacity: 1, duration: 1.1, ease: "power3.out" },
+          0
+        );
+      }
 
-    const wordEls = headlineRef.current?.querySelectorAll(".word");
-    if (wordEls) {
-      tl.fromTo(
-        wordEls,
-        { opacity: 0, y: 40, filter: "blur(12px)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, stagger: 0.07, ease: "power3.out" },
-        0.5
-      );
-    }
+      const wordEls = headlineRef.current?.querySelectorAll(".word");
+      if (wordEls) {
+        tl.fromTo(
+          wordEls,
+          { opacity: 0, y: 40, filter: "blur(12px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, stagger: 0.07, ease: "power3.out" },
+          0.5
+        );
+      }
 
-    if (hairlineRef.current) {
-      tl.fromTo(hairlineRef.current, { scaleX: 0 }, { scaleX: 1, duration: 0.32, ease: "power2.out", transformOrigin: "left" }, 1.3);
-    }
+      if (hairlineRef.current) {
+        tl.fromTo(hairlineRef.current, { scaleX: 0 }, { scaleX: 1, duration: 0.32, ease: "power2.out", transformOrigin: "left" }, 1.3);
+      }
 
-    if (subRef.current) {
-      tl.fromTo(subRef.current, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.45);
-    }
+      if (subRef.current) {
+        tl.fromTo(subRef.current, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.45);
+      }
 
-    if (pillsRef.current) {
-      tl.fromTo(pillsRef.current, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 1.6);
-    }
+      if (pillsRef.current) {
+        tl.fromTo(pillsRef.current, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 1.6);
+      }
 
-    if (metaRef.current) {
-      tl.fromTo(metaRef.current, { opacity: 0 }, { opacity: 1, duration: 0.24, ease: "power2.out" }, 1.8);
-    }
+      if (metaRef.current) {
+        tl.fromTo(metaRef.current, { opacity: 0 }, { opacity: 1, duration: 0.24, ease: "power2.out" }, 1.8);
+      }
 
-    if (photoRef.current) {
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "bottom 20%",
-        scrub: true,
-        onUpdate: (self) => {
-          if (photoRef.current) {
-            gsap.set(photoRef.current, { opacity: Math.max(0, 1 - self.progress * 1.4) });
-          }
-        },
-      });
-    }
+      if (photoRef.current) {
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom 20%",
+          scrub: true,
+          onUpdate: (self) => {
+            if (photoRef.current) {
+              gsap.set(photoRef.current, { opacity: Math.max(0, 1 - self.progress * 1.4) });
+            }
+          },
+        });
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, [mounted]);
 
   return (
@@ -111,10 +115,11 @@ export default function HomeOpener() {
       <div className="px-8 md:px-16 pb-16 md:pb-24 pt-10">
         <div ref={headlineRef} className="mb-5">
           <h1 className="font-fraunces font-bold text-[#F1EAE0] leading-[1.05] text-[clamp(36px,6vw,80px)] tracking-[-0.02em]">
-            {words.map((w, i) => (
-              <span key={i} className="word inline-block" style={{ opacity: 0 }}>
-                {w}{" "}
-              </span>
+            {words.map((w, i, arr) => (
+              <Fragment key={i}>
+                <span className="word inline-block" style={{ opacity: 0 }}>{w}</span>
+                {i < arr.length - 1 && " "}
+              </Fragment>
             ))}
           </h1>
         </div>
