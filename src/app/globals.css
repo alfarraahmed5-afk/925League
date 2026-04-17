@@ -1,0 +1,180 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0B0C0E;
+  --bone: #F1EAE0;
+  --ember: #E4572E;
+  --court: #3A7CA5;
+  --graphite: #1A1C1F;
+  --charcoal: #2A2D31;
+  --silver: #9BA0A6;
+  --linen: #E8E2D6;
+  --slate: #4A4E54;
+
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --dur-xs: 120ms;
+  --dur-s: 280ms;
+  --dur-m: 560ms;
+  --dur-l: 900ms;
+  --dur-xl: 1320ms;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--ink);
+  color: var(--bone);
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--charcoal); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--silver); }
+
+/* Selection */
+::selection { background: var(--ember); color: var(--ink); }
+
+/* Hide cursor on desktop when custom cursor active */
+@media (hover: hover) and (pointer: fine) {
+  body { cursor: none !important; }
+  * { cursor: none !important; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Typography helpers */
+.font-fraunces { font-family: var(--font-fraunces), Georgia, serif; }
+.font-inter { font-family: var(--font-inter), system-ui, sans-serif; }
+.font-mono { font-family: var(--font-jetbrains), monospace; }
+
+/* Eyebrow label */
+.eyebrow {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid rgba(241, 234, 224, 0.7);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+/* Image defaults */
+img { display: block; max-width: 100%; }
+
+/* Grain overlay */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Clip path reveal animation keyframes */
+@keyframes clipUp {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes hairlineGrow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Nav underline */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--ember);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-s) var(--ease-soft);
+}
+.nav-underline.active::after,
+.nav-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* Pill button */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0 40px;
+  height: 44px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform var(--dur-xs) var(--ease-soft), background var(--dur-s) var(--ease-soft);
+  cursor: pointer;
+}
+.pill:active { transform: scale(0.97); }
+
+.pill-primary {
+  background: var(--bone);
+  color: var(--ink);
+}
+.pill-primary:hover { background: var(--linen); }
+
+.pill-ember {
+  background: var(--ember);
+  color: var(--ink);
+}
+
+.pill-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+}
+
+/* Stat number */
+.stat-number {
+  font-family: var(--font-jetbrains), monospace;
+  font-weight: 500;
+  color: var(--ember);
+  font-feature-settings: "tnum" on;
+  letter-spacing: -0.02em;
+}
